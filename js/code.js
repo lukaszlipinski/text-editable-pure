@@ -94,15 +94,33 @@ var helper = {
     }
 };
 
-var globalSelection;
-
 var actionsDefinitions = {
     fontWeight: {
+        facade: function() {
+            this.set();
+        },
         set: function() {
             helper.execCommand('bold', null);
         },
         check: function() {
             return document.queryCommandState("bold");
+        }
+    },
+
+    color: {
+        facade: function() {
+            //get color here
+            this.set('rgb(255, 0, 0)');
+        },
+        set: function(color) {
+            if (this.check()) {
+                document.execCommand("removeFormat", false, "foreColor");
+            } else {
+                helper.execCommand('foreColor', color);
+            }
+        },
+        check: function() {
+            return document.queryCommandValue('foreColor') === 'rgb(255, 0, 0)';
         }
     },
 
@@ -122,11 +140,6 @@ var actionsDefinitions = {
 
 document.addEventListener('selectionchange', function (e) {
     var $menu = $('#menu');
-    /*e.preventDefault();
-    e.stopPropagation();
-
-    globalSelection = helper.saveSelection();*/
-    console.log("selection change");
 
     for(var key in actionsDefinitions) {
         if (actionsDefinitions.hasOwnProperty(key)) {
@@ -143,5 +156,5 @@ $('#menu').on('click', '[data-action]', function(e) {
     var $option = $(e.currentTarget);
     var action = $option.data('action');
 
-    actionsDefinitions[action].set();
+    actionsDefinitions[action].facade();
 });
