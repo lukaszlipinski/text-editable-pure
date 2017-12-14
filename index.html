@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
+    <link href="https://fonts.googleapis.com/css?family=Lato|Open+Sans|Roboto" rel="stylesheet">
     <style>
         .menu {
             border:1px solid black;
@@ -43,6 +44,15 @@
             <legend>Styles:</legend>
             <input type="button" data-action="fontWeight" value="Bold">
             <input type="button" data-action="color" value="Color">
+        </fieldset>
+        <fieldset>
+            <legend>Font:</legend>
+            <select id="font_family">
+                <option value="'Roboto', sans-serif">Roboto</option>
+                <option value="'Open Sans', sans-serif">Open Sans</option>
+                <option value="'Lato', sans-serif">Lato</option>
+            </select>
+            <input type="button" data-action="fontFamily" value="Add font">
         </fieldset>
         <fieldset>
             <legend>Links to Web:</legend>

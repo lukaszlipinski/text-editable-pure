@@ -118,13 +118,29 @@ var actionsDefinitions = {
         },
         set: function(color) {
             if (this.check()) {
-                document.execCommand("removeFormat", false, "foreColor");
+                helper.execCommand("removeFormat", false, "foreColor");
             } else {
                 helper.execCommand('foreColor', color);
             }
         },
         check: function() {
             return document.queryCommandValue('foreColor') === 'rgb(255, 0, 0)';
+        }
+    },
+
+    fontFamily: {
+        facade: function(subAction) {
+            //get color here
+            var fontFamily = document.querySelector('#font_family').value;
+
+            this.set(fontFamily);
+        },
+        set: function(fontFamily) {
+            helper.execCommand('fontname', fontFamily);
+        },
+        check: function() {
+            console.log(document.queryCommandValue('fontname'), "||||", document.querySelector('#font_family').value)
+            return document.queryCommandValue('fontname').replace(/(\"|\')/g, '') === (document.querySelector('#font_family').value.replace(/(\"|\')/g, ''));
         }
     },
 
