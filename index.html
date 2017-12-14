@@ -12,10 +12,13 @@
 
         .menu input {
             padding: 6px;
+        }
+
+        .menu input[type="button"] {
             background-color: gray;
         }
 
-        .menu input.active {
+        .menu input[type="button"].active {
             background-color: green;
             color:white;
         }
@@ -27,13 +30,45 @@
             width:400px;
             height:300px;
         }
+
+        fieldset {
+            display: inline-block;
+        }
     </style>
     <script src="js/jquery.js" charset="utf-8"></script>
 </head>
 <body>
     <div id="menu" class="menu">
-        <input type="button" data-action="fontWeight" value="Bold">
-        <input type="button" data-action="color" value="Color">
+        <fieldset>
+            <legend>Styles:</legend>
+            <input type="button" data-action="fontWeight" value="Bold">
+            <input type="button" data-action="color" value="Color">
+        </fieldset>
+        <fieldset>
+            <legend>Links to Web:</legend>
+            <input type="text" id="link_web_url" value="http://stackoverflow.com/">
+            <input type="text" id="link_web_title" value="Some title">
+            <select id="link_web_target">
+                <option value="_black">New window</option>
+                <option value="_self">Same window</option>
+            </select>
+            <input type="button" data-action="link" data-subaction="web" value="Link">
+        </fieldset>
+        <fieldset>
+            <legend>Links to Email:</legend>
+            <input type="text" id="link_email_email" value="spam@uzza.pl">
+            <input type="text" id="link_email_subject" value="Subject">
+            <input type="text" id="link_email_title" value="Title">
+            <input type="button" data-action="link" data-subaction="email" value="Link">
+        </fieldset>
+        <fieldset>
+            <legend>Links to Section:</legend>
+            <select id="link_section_id">
+                <option value="section-vvvb7">Section 1</option>
+                <option value="section-vvvb7">Section 2</option>
+            </select>
+            <input type="button" data-action="link" data-subaction="section" value="Link">
+        </fieldset>
     </div>
 
     <div class="text-editable" contenteditable="true">

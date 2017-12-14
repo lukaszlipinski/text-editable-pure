@@ -16,6 +16,10 @@ var helper = {
         return null;
     },
 
+    getSelectionString: function() {
+        return this.saveSelection().toString();
+    },
+
     restoreSelection: function(savedSel) {
         if (savedSel) {
             if (window.getSelection) {
@@ -96,7 +100,7 @@ var helper = {
 
 var actionsDefinitions = {
     fontWeight: {
-        facade: function() {
+        facade: function(subAction) {
             this.set();
         },
         set: function() {
@@ -108,7 +112,7 @@ var actionsDefinitions = {
     },
 
     color: {
-        facade: function() {
+        facade: function(subAction) {
             //get color here
             this.set('rgb(255, 0, 0)');
         },
@@ -125,15 +129,64 @@ var actionsDefinitions = {
     },
 
     link: {
-        set: function() {
-            // There's actually no need to save and restore the selection here. This is just an example.
-            //var savedSel = helper.saveSelection();
-            var url = document.getElementById("url").value;
-            //helper.restoreSelection(savedSel);
-            document.execCommand("CreateLink", false, url);
+        facade: function(subAction) {
+            this.set(subAction);
+        },
+        set: function(subAction) {
+            var selectedString = helper.getSelectionString();
+            var areLinksSelected = helper.getLinksInSelection().length > 0;
+
+            if (areLinksSelected) {
+                //Remove links from selection
+                document.execCommand('unlink', false, false);
+            } else {
+                switch (subAction) {
+                    case 'web':
+                        //<a href="http://www.wp.pl" data-url="http://www.wp.pl" title="" target="_blank"></a>
+
+                        var link_web_url = document.querySelector('#link_web_url').value;
+                        var link_web_title = document.querySelector('#link_web_title').value;
+                        var link_web_target = document.querySelector('#link_web_target').value;
+
+                        document.execCommand(
+                            'insertHTML',
+                            false,
+                            '<a href="' + link_web_url + '" data-url="' + link_web_url + '" title="' + link_web_title + '" target="' + link_web_target + '">' + selectedString + '</a>'
+                        );
+                        break;
+                    case 'email':
+                        //<a href="mailto:spam@uzza.pl?subject=title" data-url="mailto:spam@uzza.pl?subject=title" title="subject" target="_self"></a>
+
+                        var link_email_email = document.querySelector('#link_email_email').value;
+                        var link_email_subject = document.querySelector('#link_email_subject').value;
+                        var link_email_title = document.querySelector('#link_email_title').value;
+
+                        var url = 'mailto:' + link_email_email + '?subject=' + link_email_subject;
+
+                        document.execCommand(
+                            'insertHTML',
+                            false,
+                            '<a href="' + url + '" data-url="' + url + '" title="' + link_email_title + '" target="_self">' + selectedString + '</a>'
+                        );
+
+                        break;
+                    case 'section':
+                        //<a href="#section-vvvb7" data-url="#section-vvvb7" title="subject" target="_self"></a>
+
+                        var link_section_id = document.querySelector('#link_section_id').value;
+
+                        document.execCommand(
+                            'insertHTML',
+                            false,
+                            '<a href="#' + link_section_id +'" data-url="#' + link_section_id + '" title="subject" target="_self">' + selectedString + '</a>'
+                        );
+
+                        break;
+                }
+            }
         },
         check: function() {
-            //getLinksInSelection
+            return helper.getLinksInSelection().length > 0;
         }
     }
 };
@@ -155,6 +208,7 @@ $('#menu').on('click', '[data-action]', function(e) {
 
     var $option = $(e.currentTarget);
     var action = $option.data('action');
+    var subAction = $option.data('subaction');
 
-    actionsDefinitions[action].facade();
+    actionsDefinitions[action].facade(subAction);
 });
