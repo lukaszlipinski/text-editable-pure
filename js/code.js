@@ -139,7 +139,6 @@ var actionsDefinitions = {
             helper.execCommand('fontname', fontFamily);
         },
         check: function() {
-            console.log(document.queryCommandValue('fontname'), "||||", document.querySelector('#font_family').value)
             return document.queryCommandValue('fontname').replace(/(\"|\')/g, '') === (document.querySelector('#font_family').value.replace(/(\"|\')/g, ''));
         }
     },
@@ -207,7 +206,7 @@ var actionsDefinitions = {
     }
 };
 
-document.addEventListener('selectionchange', function (e) {
+var onChange = function() {
     var $menu = $('#menu');
 
     for(var key in actionsDefinitions) {
@@ -215,7 +214,9 @@ document.addEventListener('selectionchange', function (e) {
             $menu.find('[data-action=' + key + ']').toggleClass('active', actionsDefinitions[key].check());
         }
     }
-}, false);
+};
+
+document.addEventListener('selectionchange', onChange, false);
 
 
 $('#menu').on('click', '[data-action]', function(e) {
@@ -227,4 +228,6 @@ $('#menu').on('click', '[data-action]', function(e) {
     var subAction = $option.data('subaction');
 
     actionsDefinitions[action].facade(subAction);
+
+    onChange();
 });
